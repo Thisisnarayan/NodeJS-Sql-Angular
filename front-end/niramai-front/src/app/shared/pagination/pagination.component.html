@@ -1,0 +1,52 @@
+<div fxLayout="row">
+
+    <div *ngIf="showAll;else showEllipsisTemplate"  fxLayout="row" >
+        
+        <div *ngIf="compareEndPoint(endingPoint,totalSize); else regularTemplate">
+            Showing {{startingPoint}} - {{totalSize}} of {{totalSize}} entries 
+        </div>
+        <ng-template #regularTemplate>
+            Showing {{startingPoint}} - {{endingPoint}} of {{totalSize}} entries
+        </ng-template>
+        <div class="pagination-btn">
+            <mat-icon class="arrow-icons" (click)="goBack()">keyboard_arrow_left</mat-icon>
+        </div>
+        <div *ngFor="let pageNo of pagesArr" (click)="goToPage(pageNo)" [ngClass]="(currentPage === pageNo) ? 'current-page':'pagination-btn'">
+            {{pageNo}}
+        </div>
+        <div class="pagination-btn">
+            <mat-icon  class="arrow-icons" (click)="goNext()">keyboard_arrow_right</mat-icon>
+        </div>
+    </div>
+    <ng-template #showEllipsisTemplate>
+        Showing {{startingPoint}} - {{endingPoint}} of {{totalSize}} entries
+        <div class="pagination-btn">
+            <mat-icon (click)="goBack()">keyboard_arrow_left</mat-icon>
+        </div>
+        <div class="pagination-btn" *ngIf="showFirstBtn" (click)="goToPage(1)">
+           1
+        </div>
+        <div *ngIf="showLeftEllipsis">
+            ...
+        </div>
+        <div class="pagination-btn" *ngIf="showPrevBtn" (click)="goBack()">
+            {{prevPage}}
+        </div>
+        <div class="current-page">
+            {{currentPage}}
+        </div>
+        <div class="pagination-btn" *ngIf="showNextBtn" (click)="goNext()">
+            {{nextPage}}
+        </div>
+        <div *ngIf="showRightEllipsis">
+            ...
+        </div>
+        <div class="pagination-btn" *ngIf="showLastBtn" (click)="goToPage(lastPage)">
+            {{lastPage}}
+        </div>
+        <div class="pagination-btn">
+            <mat-icon (click)="goNext()">keyboard_arrow_right</mat-icon>
+        </div>
+    </ng-template>
+
+</div>

@@ -1,0 +1,93 @@
+<div fxLayout="row" fxLayoutAlign="center center">
+  <div fxLayout="column" class="table-width">
+    <mat-card>
+      <div style="padding-top: 35px">
+        <mat-icon class="icon">search</mat-icon>
+        <input
+          type="search"
+          (search)="searchTerm$.next($event)"
+          (keyup)="searchTerm$.next($event)"
+          [(ngModel)]="searchedQuery"
+          [ngModelOptions]="{ standalone: true }"
+          class="custom-input"
+          placeholder="Search Tumor by Case Id"
+          #search
+        />
+      </div>
+      <table
+        mat-table
+        [dataSource]="
+          dataSource
+            | slice
+              : (currentPage - 1) * pageSize
+              : (currentPage - 1) * pageSize + pageSize
+        "
+        class="mat-elevation-z8"
+        *ngIf="!loading; else load"
+        style="width: 100%"
+        matSort
+        (matSortChange)="sortData($event)"
+      >
+        <ng-container matColumnDef="case_id">
+          <th mat-header-cell *matHeaderCellDef mat-sort-header="case_id">Case Id</th>
+          <td mat-cell *matCellDef="let element">
+             
+              <a  [href]="returnCaseUrl(element.case_id)" target="_blank">{{ element.case_id }}</a>
+         </td>
+        </ng-container>
+
+        <ng-container matColumnDef="tumor_site">
+          <th mat-header-cell *matHeaderCellDef>Tumor Site</th>
+          <td mat-cell *matCellDef="let element">{{ element.tumor_site }}</td>
+        </ng-container>
+
+        <ng-container matColumnDef="BMI">
+          <th mat-header-cell *matHeaderCellDef mat-sort-header="BMI">BMI</th>
+          <td mat-cell *matCellDef="let element">{{ element.BMI }}</td>
+        </ng-container>
+
+        <ng-container matColumnDef="age">
+          <th mat-header-cell *matHeaderCellDef mat-sort-header="age">age</th>
+          <td mat-cell *matCellDef="let element">{{ element.age }}</td>
+        </ng-container>
+
+        <ng-container matColumnDef="height_in_cm">
+          <th mat-header-cell *matHeaderCellDef mat-sort-header="height_in_cm">Height (cm)</th>
+          <td mat-cell *matCellDef="let element">{{ element.height_in_cm }}</td>
+        </ng-container>
+
+        <ng-container matColumnDef="weight_in_kg">
+          <th mat-header-cell *matHeaderCellDef mat-sort-header="weight_in_kg">Weight (kg)</th>
+          <td mat-cell *matCellDef="let element">{{ element.weight_in_kg }}</td>
+        </ng-container>
+
+        <ng-container matColumnDef="tumor_size_in_cm">
+          <th mat-header-cell *matHeaderCellDef mat-sort-header="tumor_size_in_cm">Tumor Size (cm)</th>
+          <td mat-cell *matCellDef="let element">
+            {{ element.tumor_size_in_cm }}
+          </td>
+        </ng-container>
+
+        <tr mat-header-row *matHeaderRowDef="displayedColumns"></tr>
+        <tr mat-row *matRowDef="let row; columns: displayedColumns"></tr>
+      </table>
+      <div
+        style="height: 50px; float: right; margin-top: 25px"
+        *ngIf="dataSource?.length > 0"
+      >
+        <cp-pagination
+          class="pagination-style"
+          [(currentPage)]="currentPage"
+          [totalSize]="dataSource?.length"
+          [pageSize]="pageSize"
+          (pageChange)="pageChangeCounter($event)"
+          [stateUpdate]="paginationStateUpdate"
+        ></cp-pagination>
+      </div>
+    </mat-card>
+  </div>
+</div>
+
+<ng-template #load>
+  <mat-spinner [diameter]="100" style="margin-top: 15%"></mat-spinner>
+</ng-template>
